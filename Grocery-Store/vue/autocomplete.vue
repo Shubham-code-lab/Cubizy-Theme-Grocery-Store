@@ -10,12 +10,12 @@ export default {
             loading: false,
             error: false,
             message: "",
-            
-            search_text : "",
-            suggestions : [],
-            oldsuggestionfilter : "",
-            once_closed : "",
-            
+
+            search_text: "",
+            suggestions: [],
+            oldsuggestionfilter: "",
+            once_closed: "",
+
             open: false,
             current: 0,
             magic_flag: false
@@ -30,14 +30,14 @@ export default {
         },
         search_text(newValue, oldValue) {
             var value = newValue.trim()
-            if(!value){
+            if (!value) {
                 this.suggestions = []
                 this.oldsuggestionfilter = ""
                 return
             }
-            if(this.suggestions.length == 100 && this.oldsuggestionfilter != value ){
+            if (this.suggestions.length == 100 && this.oldsuggestionfilter != value) {
                 this.loadsuggestions()
-            }else if (!this.oldsuggestionfilter || !value.includes(this.oldsuggestionfilter)) {
+            } else if (!this.oldsuggestionfilter || !value.includes(this.oldsuggestionfilter)) {
                 this.loadsuggestions()
             }
         },
@@ -60,8 +60,8 @@ export default {
         },
         openSuggestion() {
             return this.selection !== '' &&
-            this.matches.length !== 0 &&
-            this.open === true
+                this.matches.length !== 0 &&
+                this.open === true
         }
     },
     methods: {
@@ -122,7 +122,7 @@ export default {
                 this.open = false
             }, 1000);
         },
-        loadsuggestions(){
+        loadsuggestions() {
             this.oldsuggestionfilter = this.search_text.trim()
             if (!this.loading) {
                 this.loading = true
@@ -140,7 +140,7 @@ export default {
                             this.suggestions = data.data;
                             this.open = true
                         }
-                    }else{
+                    } else {
                         this.error = true
                     }
                 }).finally(() => {
@@ -149,14 +149,14 @@ export default {
             }
         }
     },
-    mounted: function () {},
+    mounted: function () { },
 }    
 </script>
 <template>
-<div class="dropdown" tabindex="1">
+    <div class="dropdown" tabindex="1">
         <div class="input-group">
-            <input class="form-control rounded-end pe-5" type="text" v-model="search_text" @keydown.enter="enter"
-                @keydown.down="down" @keydown.up="up" @blur="close()" :placeholder="placeholder">
+            <input class="form-control rounded-end" style="padding-left: 40px;" type="text" v-model="search_text"
+                @keydown.enter="enter" @keydown.down="down" @keydown.up="up" @blur="close()" :placeholder="placeholder">
             <i class="ci-search position-absolute top-50 end-0 translate-middle-y text-muted fs-base me-3"></i>
         </div>
         <div v-if="loading" class="dropdown-menu show" style="font-size:1em; min-width: 100%;">
@@ -164,19 +164,23 @@ export default {
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-        <ul class="dropdown-menu " style="font-size:1em; min-width: 100%;" :class="{'show': openSuggestion }">
-            <li class="{'text-danger', error}">{{message}}</li>
+        <ul class="dropdown-menu " style="font-size:1em; min-width: 100%;" :class="{ 'show': openSuggestion }">
+            <li class="{'text-danger', error}">{{ message }}</li>
             <li v-for="(suggestion, index) in matches" class="dropdown-item" @click="suggestionClick(index)">
-                <a :href="'/product/'+suggestion.id+'/'+encodeURI(suggestion.name)" v-bind:class="{'active': isActive(index)}">
-                    <span>{{pre_text(suggestion.name)}}</span>
-                    <strong>{{search_text}}</strong>
-                    <span>{{post_text(suggestion.name)}}</span>
+                <a :href="'/product/' + suggestion.id + '/' + encodeURI(suggestion.name)"
+                    v-bind:class="{ 'active': isActive(index) }">
+                    <span>{{ pre_text(suggestion.name) }}</span>
+                    <strong>{{ search_text }}</strong>
+                    <span>{{ post_text(suggestion.name) }}</span>
                 </a><br />
-                in 
-                <router-link :to="getSubCategoryUrl(getSubcategory(suggestion.subcategory_id, suggestion.base_subcategory_id))">{{getSubcategory(suggestion.subcategory_id, suggestion.base_subcategory_id).Name}}</router-link> 
                 in
-                <router-link :to="getCategoryUrl(getCategory(suggestion.category_id, suggestion.base_category_id))">{{getCategory(suggestion.category_id, suggestion.base_category_id).Name}}</router-link>
+                <router-link
+                    :to="getSubCategoryUrl(getSubcategory(suggestion.subcategory_id, suggestion.base_subcategory_id))">
+                    {{ getSubcategory(suggestion.subcategory_id, suggestion.base_subcategory_id).Name }}</router-link>
+                in
+                <router-link :to="getCategoryUrl(getCategory(suggestion.category_id, suggestion.base_category_id))">
+                    {{ getCategory(suggestion.category_id, suggestion.base_category_id).Name }}</router-link>
             </li>
         </ul>
-    </div>        
+    </div>
 </template>
